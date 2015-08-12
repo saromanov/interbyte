@@ -1,5 +1,6 @@
 import dis
 import inspect
+import logging
 
 
 class VM:
@@ -30,6 +31,10 @@ class VM:
         ''' After compiled, parse result'''
         return dis.opname[code]
 
+    def _get(n):
+        if n > len(self.stack):
+            logging.info("Value is greater than size of stack")
+
     def _process_opcode(self, opcode, item):
         if opcode == 'LOAD_CONST':
             self.stack.extend(item)
@@ -38,5 +43,5 @@ class VM:
         if opcode == 'LOAD_ATTR':
             value = self.stack.pop()
         if opcode == 'STORE_ATTR':
-            value = self.stack.pop()
+            value = self.stack.get(2)
             setattr(value, item)
