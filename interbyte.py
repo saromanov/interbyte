@@ -35,3 +35,8 @@ class VM:
             self.stack.extend(item)
         if opcode == 'STORE_NAME':
             self.names[item] = self.stack.pop()
+        if opcode == 'LOAD_ATTR':
+            value = self.stack.pop()
+        if opcode == 'STORE_ATTR':
+            value = self.stack.pop()
+            setattr(value, item)
