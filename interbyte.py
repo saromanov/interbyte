@@ -37,7 +37,7 @@ class VM:
 
     def _process_opcode(self, opcode, item):
         if opcode == 'LOAD_CONST':
-            self.stack.extend(item)
+            self.stack.push(item)
         if opcode == 'STORE_NAME':
             self.names[item] = self.stack.pop()
         if opcode == 'LOAD_ATTR':
@@ -45,6 +45,8 @@ class VM:
         if opcode == 'STORE_ATTR':
             value = self.stack.get(2)
             setattr(value, item)
+        if opcode == 'POP_TOP':
+            self.stack.pop()
         if opcode.startsWith('BINARY'):
             x = self.stack.pop()
             y = self.stack.pop()
