@@ -45,3 +45,35 @@ class VM:
         if opcode == 'STORE_ATTR':
             value = self.stack.get(2)
             setattr(value, item)
+        if opcode.startsWith('BINARY'):
+            x = self.stack.pop()
+            y = self.stack.pop()
+            self.stack.push(self._binary_operations(opcode, x, y))
+
+    def _binary_operations(op, x, y):
+        if op == 'BINARY_POWER':
+            return x ** y
+        if op == 'BINARY_MULTIPLY':
+            return x * y
+        if op == 'BINARY_DIVIDE' or op == 'BINARY_TRUE_DIVIDE':
+            return x/y
+        if op == 'BINARY_FLOOR_DIVIDE':
+            return x//y
+        if op == 'BINARY_MODULO':
+            return x%y
+        if op == 'BINARY_ADD':
+            return x + y
+        if op == 'BINARY_SUBTRACT':
+            return x - y
+        if op == 'BINARY_SUBSCR':
+            return x[y]
+        if op == 'BINARY_LSHIFT':
+            return x << y
+        if op == 'BINARY_RSHIFT':
+            return x >> y
+        if op == 'BINARY_AND':
+            return x & y
+        if op == 'BINARY_XOR':
+            return x ^ y
+        if op == 'BINARY_OR':
+            return x | y
