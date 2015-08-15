@@ -12,7 +12,7 @@ class VM:
         if code == '':
             raise Exception('Code contains empty string')
         converted = self._compile(code)
-        self._process(converted.co_code)
+        self._process(converted)
 
     def _compile(self, code):
         try:
@@ -22,10 +22,15 @@ class VM:
             raise Exception("Found errors in code compile")
 
     def _process(self, items):
-        for item in items:
+        names = items.co_names
+        varnames = items.co_varnames
+        consts = items.co_consts
+        code = items.co_code
+        for item in code:
+            print(item >= dis.HAVE_ARGUMENT)
             result = self._parse(item)
             if result != '<0>':
-                print(result)
+                print(item)
 
     def _parse(self, code):
         ''' After compiled, parse result'''
