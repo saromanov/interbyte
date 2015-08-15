@@ -42,15 +42,25 @@ class VM:
             self.names[item] = self.stack.pop()
         if opcode == 'LOAD_ATTR':
             value = self.stack.pop()
+        if opcode == 'LOAD_NAME':
+            name = self.names[item]
+            self.stack.push(name)
         if opcode == 'STORE_ATTR':
             value = self.stack.get(2)
             setattr(value, item)
         if opcode == 'POP_TOP':
             self.stack.pop()
+        if opcdoe == 'ROT_TWO':
+            value1 = self.stack.pop()
+            value2 = self.stack.pop()
+            self.stack.push(value1)
+            self.stack.push(value2)
         if opcode.startsWith('BINARY'):
             x = self.stack.pop()
             y = self.stack.pop()
             self.stack.push(self._binary_operations(opcode, x, y))
+        if opcode == 'RETURN_VALUE':
+            print(self.stack)
 
     def _binary_operations(op, x, y):
         if op == 'BINARY_POWER':
