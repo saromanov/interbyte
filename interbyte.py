@@ -64,6 +64,9 @@ class VM:
             x = self.stack.pop()
             y = self.stack.pop()
             self.stack.push(self._binary_operations(opcode, x, y))
+        if opcode.startsWith('UNARY'):
+            x = self.stack.pop()
+
         if opcode == 'RETURN_VALUE':
             print(self.stack)
 
@@ -94,3 +97,15 @@ class VM:
             return x ^ y
         if op == 'BINARY_OR':
             return x | y
+
+    def _unary_operations(op, x):
+        if op == 'UNARY_POSITIVE':
+            return +x
+        if op == 'UNARY_NEGATIVE':
+            return -x
+        if op == 'UNARY_NOT':
+            return not x
+        if op == 'UNARY_CONVERT':
+            return repr(x)
+        if op == 'UNARY_INVERT':
+            return ~x
