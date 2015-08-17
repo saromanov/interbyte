@@ -30,10 +30,10 @@ class VM:
         while idx < len(code):
             code_item = code[idx]
             item = self._parse(code_item)
+            value = ''
             #If current params have a argument, find it
             if code_item >= dis.HAVE_ARGUMENT:
                  arg1 = code[idx+1]
-                 value = ''
                  if item == 'RETURN_VALUE':
                      break
                  if code_item in dis.hasname:
@@ -41,7 +41,7 @@ class VM:
                  if code_item in dis.hasconst:
                      value = consts[arg1]
             idx += 1
-            #self._process_opcode(item, value)
+            self._process_opcode(item, value)
 
         def _getArguments(self):
             pass
@@ -55,6 +55,8 @@ class VM:
             logging.info("Value is greater than size of stack")
 
     def _process_opcode(self, opcode, item):
+        #print(opcode, item)
+        print(self.stack)
         if opcode == 'LOAD_CONST':
             self.stack.append(item)
         if opcode == 'STORE_NAME':
@@ -67,9 +69,12 @@ class VM:
         if opcode == 'STORE_ATTR':
             value = self.stack.get(2)
             setattr(value, item)
-        if opcode == 'POP_TOP':
+        '''if opcode == 'POP_TOP':
             self.stack.pop()
+        '''
         if opcode == 'ROT_TWO':
+            if len(self.stack) < 2:
+                return
             value1 = self.stack.pop()
             value2 = self.stack.pop()
             self.stack.append(value1)
@@ -77,14 +82,15 @@ class VM:
         if opcode.startswith('BINARY'):
             x = self.stack.pop()
             y = self.stack.pop()
-            self.stack.append(self._binary_operations(opcode, x, y))
+            result = self._binary_operations(opcode, x, y)
+            self.stack.append(result)
         if opcode.startswith('UNARY'):
             x = self.stack.pop()
 
         if opcode == 'RETURN_VALUE':
             print(self.stack)
 
-    def _binary_operations(op, x, y):
+    def _binary_operations(self, op, x, y):
         if op == 'BINARY_POWER':
             return x ** y
         if op == 'BINARY_MULTIPLY':
