@@ -27,18 +27,23 @@ class VM:
         consts = items.co_consts
         code = items.co_code
         idx = 0
+        idx_names = 0
+        idx_consts = 0
         while True:
             code_item = code[idx]
             item = self._parse(code_item)
             if item == '<0>':
+                idx += 1
                 continue
             value = ''
             if item == 'RETURN_VALUE':
                 break
             if code_item in dis.hasname:
-                value = names[idx]
+                value = names[idx_names]
+                idx_names+=1
             if code_item in dis.hasconst:
-                value = consts[idx]
+                value = consts[idx_consts]
+                idx_consts+=1
             idx += 1
             self._process_opcode(item, value)
 
@@ -75,7 +80,7 @@ class VM:
             x = self.stack.pop()
             y = self.stack.pop()
             self.stack.append(self._binary_operations(opcode, x, y))
-        if opcode.startsWith('UNARY'):
+        if opcode.startswith('UNARY'):
             x = self.stack.pop()
 
         if opcode == 'RETURN_VALUE':
