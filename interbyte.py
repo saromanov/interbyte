@@ -26,11 +26,21 @@ class VM:
         varnames = items.co_varnames
         consts = items.co_consts
         code = items.co_code
-        for item in code:
-            print(item >= dis.HAVE_ARGUMENT)
-            result = self._parse(item)
-            if result != '<0>':
-                print(item)
+        idx = 0
+        while True:
+            code_item = code[idx]
+            item = self._parse(code_item)
+            if item == '<0>':
+                continue
+            value = ''
+            if item == 'RETURN_VALUE':
+                break
+            if code_item in dis.hasname:
+                value = varnames[idx]
+            if code_item in dis.hasconst:
+                value = consts[idx]
+            idx += 1
+            self._process_opcode(item, value)
 
     def _parse(self, code):
         ''' After compiled, parse result'''
@@ -41,29 +51,30 @@ class VM:
             logging.info("Value is greater than size of stack")
 
     def _process_opcode(self, opcode, item):
+        print(opcode, item)
         if opcode == 'LOAD_CONST':
-            self.stack.push(item)
+            self.stack.append(item)
         if opcode == 'STORE_NAME':
             self.names[item] = self.stack.pop()
         if opcode == 'LOAD_ATTR':
             value = self.stack.pop()
         if opcode == 'LOAD_NAME':
             name = self.names[item]
-            self.stack.push(name)
+            self.stack.append(name)
         if opcode == 'STORE_ATTR':
             value = self.stack.get(2)
             setattr(value, item)
         if opcode == 'POP_TOP':
             self.stack.pop()
-        if opcdoe == 'ROT_TWO':
+        if opcode == 'ROT_TWO':
             value1 = self.stack.pop()
             value2 = self.stack.pop()
-            self.stack.push(value1)
-            self.stack.push(value2)
+            self.stack.append(value1)
+            self.stack.append(value2)
         if opcode.startsWith('BINARY'):
             x = self.stack.pop()
             y = self.stack.pop()
-            self.stack.push(self._binary_operations(opcode, x, y))
+            self.stack.append(self._binary_operations(opcode, x, y))
         if opcode.startsWith('UNARY'):
             x = self.stack.pop()
 
