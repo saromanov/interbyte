@@ -36,7 +36,7 @@ class VM:
             if item == 'RETURN_VALUE':
                 break
             if code_item in dis.hasname:
-                value = varnames[idx]
+                value = names[idx]
             if code_item in dis.hasconst:
                 value = consts[idx]
             idx += 1
@@ -71,7 +71,7 @@ class VM:
             value2 = self.stack.pop()
             self.stack.append(value1)
             self.stack.append(value2)
-        if opcode.startsWith('BINARY'):
+        if opcode.startswith('BINARY'):
             x = self.stack.pop()
             y = self.stack.pop()
             self.stack.append(self._binary_operations(opcode, x, y))
