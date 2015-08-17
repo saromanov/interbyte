@@ -27,25 +27,24 @@ class VM:
         consts = items.co_consts
         code = items.co_code
         idx = 0
-        idx_names = 0
-        idx_consts = 0
-        while True:
+        while idx < len(code):
             code_item = code[idx]
             item = self._parse(code_item)
-            if item == '<0>':
-                idx += 1
-                continue
-            value = ''
-            if item == 'RETURN_VALUE':
-                break
-            if code_item in dis.hasname:
-                value = names[idx_names]
-                idx_names+=1
-            if code_item in dis.hasconst:
-                value = consts[idx_consts]
-                idx_consts+=1
+            #If current params have a argument, find it
+            if code_item >= dis.HAVE_ARGUMENT:
+                 arg1 = code[idx+1]
+                 value = ''
+                 if item == 'RETURN_VALUE':
+                     break
+                 if code_item in dis.hasname:
+                     value = names[arg1]
+                 if code_item in dis.hasconst:
+                     value = consts[arg1]
             idx += 1
-            self._process_opcode(item, value)
+            #self._process_opcode(item, value)
+
+        def _getArguments(self):
+            pass
 
     def _parse(self, code):
         ''' After compiled, parse result'''
@@ -56,7 +55,6 @@ class VM:
             logging.info("Value is greater than size of stack")
 
     def _process_opcode(self, opcode, item):
-        print(opcode, item)
         if opcode == 'LOAD_CONST':
             self.stack.append(item)
         if opcode == 'STORE_NAME':
