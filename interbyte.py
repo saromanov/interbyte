@@ -55,12 +55,12 @@ class VM:
             logging.info("Value is greater than size of stack")
 
     def _process_opcode(self, opcode, item):
-        #print(opcode, item)
-        print(self.stack)
         if opcode == 'LOAD_CONST':
             self.stack.append(item)
-        if opcode == 'STORE_NAME':
+        if opcode == 'STORE_NAME' or opcode == 'STORE_FAST':
             self.names[item] = self.stack.pop()
+        if opcode == 'DELETE_FAST':
+            del self.names[item]
         if opcode == 'LOAD_ATTR':
             value = self.stack.pop()
         if opcode == 'LOAD_NAME':
