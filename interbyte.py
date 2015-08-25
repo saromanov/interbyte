@@ -43,7 +43,8 @@ class VM:
                  if code_item in dis.hasconst:
                      value = consts[arg1]
             idx += 1
-            self._process_opcode(item, value)
+            print(item, value)
+            #self._process_opcode(item, value)
 
         def _getArguments(self):
             pass
@@ -61,6 +62,8 @@ class VM:
             self.stack.append(item)
         if opcode == 'STORE_NAME' or opcode == 'STORE_FAST':
             self.names[item] = self.stack.pop()
+        if opcpde == 'STORE_GLOBAL':
+            self.global_names[item] = self.stack.pop()
         if opcode == 'DELETE_FAST':
             del self.names[item]
         if opcode == 'LOAD_ATTR':
@@ -88,6 +91,10 @@ class VM:
             self.stack.append(result)
         if opcode.startswith('UNARY'):
             x = self.stack.pop()
+        if opcode == 'UNPACK_SEQUENCE':
+            seq = self.stack.pop()
+            rev = reversed(seq)
+            [self.stack.push(x) for x in rev]
 
         if opcode == 'RETURN_VALUE':
             print(self.stack)
