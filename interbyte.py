@@ -7,6 +7,8 @@ class VM:
     def __init__(self):
         self.stack = []
         self.names = {}
+        self.local_names = {}
+        self.global_names = {}
 
     def fit(self, code, globals=None, locals=None):
         if code == '':
